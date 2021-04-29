@@ -1,3 +1,5 @@
+import {isArray} from "util";
+
 type NewUserType = {
 		name: string
 		age: number
@@ -121,3 +123,32 @@ test("sort array test", () => {
 function passportist(letters: any) {
 		const copy = [...letters].sort()
 }
+
+test("newArray", () => {
+		const array = [1, 32, 24, [2, 12, 15, 1], 45, 66]
+
+		function funcArr(arr: Array<number | Array<number>>) {
+				const newArray: Array<number | Array<number>> = []
+
+
+				function map(arr: Array<number | Array<number>>) {
+						arr.map((el) => {
+								if (Array.isArray(el)) {
+										map(el)
+								}
+								if (!Array.isArray(el)) {
+										newArray.push(el)
+								}
+
+						})
+				}
+
+				map(arr)
+
+				return newArray
+		}
+
+		const newArray = funcArr(array)
+
+		expect(newArray).toEqual([1, 32, 24, 2, 12, 15, 1, 45, 66])
+})
