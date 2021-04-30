@@ -1,5 +1,12 @@
 import {makeHairStyle, moveUser, upgradeUserLaptop, UserType, UserWithLaptopType} from "./10";
-import {addNewBooksToUser, moveUserToOtherHouse, UserWithBooksType, addNewBookToUser, updateBook} from "./10_01";
+import {
+		addNewBooksToUser,
+		moveUserToOtherHouse,
+		UserWithBooksType,
+		addNewBookToUser,
+		updateBook,
+		removeBook, WithCompaniesType, updateCompanyTitle, updateCompanyTitleAssociativeArray
+} from "./10_01";
 
 test('immutability object test: change hair', () => {
 		let user: UserType = {
@@ -186,4 +193,100 @@ test('immutability arrays test: update book', () => {
 		expect(userCopy.books).toEqual([
 				'css', 'react', 'ts'
 		])
+})
+
+test('immutability arrays test: remove book', () => {
+		let user: UserWithLaptopType & UserWithBooksType = {
+				name: 'Dima',
+				hair: 32,
+				laptop: {
+						title: 'Zenbook'
+				},
+				address: {
+						city: 'Minsk',
+						house: 12
+				},
+				books: [
+						'css', 'react', 'js'
+				]
+		}
+
+		const userCopy = removeBook(user, 'js')
+
+		expect(user).not.toBe(userCopy)
+		expect(user.laptop).toBe(userCopy.laptop)
+		expect(user.address).toBe(userCopy.address)
+
+		expect(user.books).not.toBe(userCopy.books)
+		expect(user.books.length).toBe(3)
+		expect(userCopy.books.length).toBe(2)
+		expect(user.books).toEqual([
+				'css', 'react', 'js'
+		])
+		expect(userCopy.books).toEqual([
+				'css', 'react'
+		])
+})
+
+test('immutability arrays test: update company title', () => {
+		let user: UserWithLaptopType & WithCompaniesType = {
+				name: 'Dima',
+				hair: 32,
+				laptop: {
+						title: 'Zenbook'
+				},
+				address: {
+						city: 'Minsk',
+						house: 12
+				},
+				companies: [
+						{id: 1, title: 'ЕПАМ'},
+						{id: 2, title: 'Google'},
+				]
+		}
+
+		const userCopy = updateCompanyTitle(user, 1, 'EPAM') as UserWithLaptopType & WithCompaniesType
+
+		expect(user).not.toBe(userCopy)
+		expect(user.laptop).toBe(userCopy.laptop)
+		expect(user.address).toBe(userCopy.address)
+
+		expect(user.companies).not.toBe(userCopy.companies)
+		expect(user.companies.length).toBe(2)
+		expect(userCopy.companies.length).toBe(2)
+		expect(user.companies).toEqual([
+				{id: 1, title: 'ЕПАМ'},
+				{id: 2, title: 'Google'},
+		])
+		expect(userCopy.companies).toEqual([
+				{id: 1, title: 'EPAM'},
+				{id: 2, title: 'Google'},
+		])
+		expect(user.companies[0].title).toBe('ЕПАМ')
+		expect(userCopy.companies[0].title).toBe('EPAM')
+
+		expect(user.companies[1]).toBe(userCopy.companies[1])
+		expect(user.companies[0]).not.toBe(userCopy.companies[0])
+})
+
+test('immutability associative array test: update company title', () => {
+
+		const companies = {
+				'Dima': [
+						{id: 1, title: 'ЕПАМ'},
+						{id: 2, title: 'Google'},
+				],
+				'Kristina' : [
+						{id: 1, title: 'Yandex'},
+				]
+		}
+
+		const copyCompanies = updateCompanyTitleAssociativeArray(companies, 'Dima', 1, 'EPAM')
+
+		expect(companies).not.toBe(copyCompanies)
+		expect(companies['Dima']).not.toBe(copyCompanies['Dima'])
+		expect(companies['Kristina']).toBe(copyCompanies['Kristina'])
+
+		expect(companies['Dima'][0].title).toBe('ЕПАМ')
+		expect(copyCompanies['Dima'][0].title).toBe('EPAM')
 })

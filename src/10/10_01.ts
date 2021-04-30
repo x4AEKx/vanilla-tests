@@ -19,6 +19,12 @@ export type UserWithBooksType = UserType & {
 		books: Array<string>
 }
 
+type CompanyType = { title: string, id: number };
+
+export type WithCompaniesType = {
+		companies: Array<CompanyType>
+}
+
 export function makeHairStyle(u: UserType, power: number) {
 		return {
 				...u,
@@ -74,5 +80,26 @@ export function updateBook(u: UserWithLaptopType & UserWithBooksType, startBook:
 		return {
 				...u,
 				books: u.books.map((book) => book === startBook ? replacedBook : book)
+		}
+}
+
+export function removeBook(u: UserWithLaptopType & UserWithBooksType, book: string) {
+		return {
+				...u,
+				books: u.books.filter(b => b !== book)
+		}
+}
+
+export function updateCompanyTitle(u: WithCompaniesType, id: number, title: string) {
+		return {
+				...u,
+				companies: u.companies.map(c => c.id === id ? {...c, title: title} : c)
+		}
+}
+
+export function updateCompanyTitleAssociativeArray(companies: {[key: string]: Array<CompanyType>}, userName: string, companyId: number, title: string) {
+		return {
+				...companies,
+				[userName]: companies[userName].map(c => c.id === companyId ? {...c, title: title} : c)
 		}
 }
